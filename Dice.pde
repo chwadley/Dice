@@ -4,32 +4,15 @@ class Die {
   float y;
   float s;
   float r;
-  float a;
-  float rad;
-  boolean setxy;
-  Die(float _x, float _y, float _s, float _r, float _a, float _rad, boolean _setxy) {
+  Die(float _x, float _y, float _s, float _r) {
     x=_x;
     y=_y;
     s=_s;
     r=_r;
-    a=_a;
-    rad=_rad;
-    setxy=_setxy;
-    if (_setxy) {
-      x=width/2+cos(_a)*_rad;
-      y=height/2+sin(_a)*_rad;
-    }
     roll();
   }
   void roll() {
     n=(int)(Math.random()*6)+1;
-    score+=n;
-  }
-  void update() {
-    if (setxy) {
-      x=width/2+cos(a)*rad;
-      y=height/2+sin(a)*rad;
-    }
   }
   void show() {
     rectMode(CENTER);
@@ -60,62 +43,45 @@ class Die {
   }
 }
 
-ArrayList <Die> d=new ArrayList <Die>();
-int score=0;
-float s;
-int[] price={100};
+Die[] d=new Die[225];
+int t=0;
+int t2=0;
+int s;
 
 void setup() {
   size(1000,1000);
   s=50;
-  for (int i=0;i<1;i++) {
-    d.add(new Die(width/2,height/2,s,0,0,width/3,false));
+  for (int y=0;y<15;y++) {
+    for (int x=0;x<15;x++) {
+      d[x+y*15]=new Die(s/2+x*(s+10)+10,s/2+y*(s+10)+10,s,0);
+    }
   }
 }
 
 void draw() {
   background(220);
-  for (int i=0;i<d.size();i++) {
-    d.get(i).r+=0.01;
-    d.get(i).a+=0.005;
-    d.get(i).update();
-    d.get(i).show();
+  for (int i=0;i<d.length;i++) {
+    d[i].r+=0.01;
+    d[i].show();
     fill(0);
     noStroke();
   }
-  if (frameCount%60==0) {
-    for (int i=1;i<d.size();i++) {
-      d.get(i).roll();
-      d.get(i).update();
-      d.get(i).show();
-    }
-  }
   fill(255);
   stroke(0);
-  strokeWeight(2);
-  rectMode(CORNER);
-  rect(5,5,100,50,5);
-  rect(5,60,100,50,5);
-  //rect(5,115,100,50,5);
+  rect(width/2,height/2,300,150);
   fill(0);
   noStroke();
   textAlign(CENTER,CENTER);
   textSize(30);
-  text(score,5+100/2,5+50/2-3);
-  text(price[0],5+100/2,60+50/2-3);
+  text("current total: "+Integer.toString(t),width/2,height/2-50);
+  text("all-time total: "+Integer.toString(t2),width/2,height/2+50);
 }
 
 void mousePressed() {
-  if (mouseX>=5&&mouseY>=60&&mouseX<=105&&mouseY<=110) {
-    if (score>price[0]) {
-      addDie();
-      score-=price[0];
-      price[0]*=1.1;
-    }
+  t=0;
+  for (int i=0;i<d.length;i++) {
+    d[i].roll();
+    t+=d[i].n;
   }
-  d.get(0).roll();
-}
-
-void addDie() {
-  d.add(new Die(0,0,s,0,d.get(d.size()-1).a+0.2,width/3,true));
+  t2+=t;
 }
