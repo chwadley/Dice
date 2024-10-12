@@ -73,8 +73,10 @@ void draw() {
   noStroke();
   textAlign(CENTER,CENTER);
   textSize(30);
-  text("current total: "+Integer.toString(t),width/2,height/2-50);
-  text("all-time total: "+Integer.toString(t2),width/2,height/2+50);
+  text("current total",width/2,height/2-75);
+  text(t,width/2,height/2-25);
+  text("all-time total",width/2,height/2+25);
+  text(t2,width/2,height/2+75);
 }
 
 void mousePressed() {
